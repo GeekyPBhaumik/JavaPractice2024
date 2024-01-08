@@ -4,14 +4,12 @@
 import java.util.Scanner;
 
 public class PowerProblem {
-
     static boolean isPower(int num){
-        int count = 0;
+
         if(num==1)
             return false;
         while(num>1){
             if(num%2==0){
-                count++;
                 num/=2;
             }else{
                 return false;
