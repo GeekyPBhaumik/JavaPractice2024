@@ -1,0 +1,28 @@
+//https://www.geeksforgeeks.org/problems/array-of-alternate-ve-and-ve-nos1401/1
+//Used Two ArrayList, one for the even list of Integers, another for the odd list of Integers
+class Solution {
+    void rearrange(int arr[], int n) {
+        // code here
+        int i;
+        ArrayList<Integer> al1 = new ArrayList<>();
+        ArrayList<Integer> al2 = new ArrayList<>();
+        for(i=0;i<arr.length;i++){
+            if(arr[i]<0){
+                al2.add(arr[i]);//-2 -1 -5 -3
+            }else{
+                al1.add(arr[i]);//9 4 5 0 2
+            }
+        }
+        int arrPointer=0;
+        int al1Pointer=0;
+        int al2Pointer=0;
+        for(i=0;i<n;i++){
+            if(i<al1.size()){
+                arr[arrPointer++]=al1.get(al1Pointer++);
+            }
+            if(i<al2.size()){
+                arr[arrPointer++]=al2.get(al2Pointer++);
+            }
+        }
+    }
+}
