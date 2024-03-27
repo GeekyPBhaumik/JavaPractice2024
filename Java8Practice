@@ -1,0 +1,93 @@
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class Java8Practice {
+    public static void main(String[] args) {
+        List<Employees> employees = new ArrayList<>();
+
+        // Adding some employees
+        employees.add(new Employees("John", 60000, 101, "Sales"));
+        employees.add(new Employees("Alice", 55000, 102, "HR"));
+        employees.add(new Employees("Bob", 70000, 103, "Engineering"));
+        employees.add(new Employees("Emma", 50000, 104, "Sales"));
+        employees.add(new Employees("Tom", 65000, 105, "Engineering"));
+
+        //1. Create a list of employees and find the employee with the highest salary
+        //Employees::getSalary :: -> Method Reference. Employee class, getSalary is the method of the Employee class
+        //comparing the salaries of the Employees using Comparator.comparing method
+        //max() terminal method returns an Optional because it may found the stream empty
+        Optional<Employees> maxSalary = Optional.of(employees.stream()
+                                        .max(Comparator.comparing(Employees::getSalary))
+                                        .orElse(null));
+        System.out.println("Max Salary:"+maxSalary.get());
+
+        //2. Calculate the total salary of all employees.
+        //Creating a stream of employess list
+        //Create a Double stream of Employee Salaries
+        //Calculating the sum of the Double Salary stream
+        double totalSalary = employees.stream().mapToDouble(Employees::getSalary).sum();
+        System.out.println("Total Salary:"+totalSalary);
+
+        //3. Group employees by department.
+        //groupingBy in the Stream API creates a map always
+        //It takes 2 params
+        //First : classification function that defines how elements are grouped
+        //Second: A downstream collector that defines how the elements within each group are collected.
+        //If you don't provide a downstream collector, it defaults to collecting elements into a List
+        Map<String, List<Employees>> map = employees.stream()
+                                           .collect(Collectors.groupingBy(Employees::getDepartment));
+        //Creating an entrySet from the Map
+        Set<Map.Entry<String, List<Employees>>> entrySet = map.entrySet();
+        //Traversing the Set
+        for (Map.Entry<String, List<Employees>> entry : entrySet) {
+            String department = entry.getKey();
+            List<Employees> employeeList = entry.getValue();
+            System.out.println("Department: " + department);
+            System.out.println("Employees: " + employeeList);
+        }
+
+        //4. Find the average salary of employees in each department.
+        //Creating a map using groupingBy
+        //Keys as departments
+        //Values as average salary of each department
+        Map<String,Double> averageSalaryMap= employees.stream().collect(Collectors.groupingBy(Employees::getDepartment,Collectors.averagingDouble(Employees::getSalary)));
+        Set<Map.Entry<String,Double>> set = averageSalaryMap.entrySet();
+        for(Map.Entry<String,Double> entry : set){
+            System.out.println("Department:"+entry.getKey()+", "+"Average Salary:"+entry.getValue());
+        }
+        //5. Sort employees by salary in descending order.
+        //Sorting the Employees based on salaries using Comparator
+        //Reversing the Employees sorted because I want the sorting in descending order
+        //converting the stream into a List
+        List<Employees> emp = employees.stream().sorted(Comparator.comparing(Employees::getSalary)
+                                                .reversed())
+                                                .collect(Collectors.toList());
+        for(Employees e:emp){
+            System.out.println(e);
+        }
+        //6. Find the employee with the lowest salary in the Sales department.
+        //sorting on the basis of Salaries
+        //finding the first element of the stream
+        //getting the Employee from the Optional
+        Employees lowestSalEmp = employees.stream()
+                                          .sorted(Comparator.comparing(Employees::getSalary))
+                                          .findFirst()
+                                          .get();
+        System.out.println("Name:"+lowestSalEmp.getName()+", Salary:"+lowestSalEmp.getSalary());
+
+        //7. Increase the salary of all employees by 10%.
+        employees.forEach(employeeSal -> employeeSal.setSalary(employeeSal.getSalary()*1.01));
+        for(Employees empNew:employees){
+            System.out.println("Name:"+empNew.getName()+",Salary:"+empNew.getSalary());
+        }
+        //8. Count the number of employees in each department.
+        Map<String,Long> countMap = employees.stream().collect(Collectors.groupingBy(Employees::getDepartment,Collectors.counting()));
+        Set<Map.Entry<String,Long>> countMapSet = countMap.entrySet();
+        for(Map.Entry<String,Long> m:countMapSet){
+            System.out.println("Department:"+m.getKey()+",EmployeeCount:"+m.getValue());
+        }
+
+
+    }
+}
