@@ -1,8 +1,9 @@
 import java.util.*;
+
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Java8Practice {
+
     public static void main(String[] args) {
         List<Employees> employees = new ArrayList<>();
 
@@ -70,24 +71,38 @@ public class Java8Practice {
         //sorting on the basis of Salaries
         //finding the first element of the stream
         //getting the Employee from the Optional
-        Employees lowestSalEmp = employees.stream()
-                                          .sorted(Comparator.comparing(Employees::getSalary))
-                                          .findFirst()
-                                          .get();
-        System.out.println("Name:"+lowestSalEmp.getName()+", Salary:"+lowestSalEmp.getSalary());
-
+        Optional<Employees> lowestSalEmp = employees.stream()
+                                          .min(Comparator.comparing(Employees::getSalary));
+        lowestSalEmp.ifPresent(value -> System.out.println("Name:" + value.getName() + ", Salary:" + value.getSalary()));
         //7. Increase the salary of all employees by 10%.
         employees.forEach(employeeSal -> employeeSal.setSalary(employeeSal.getSalary()*1.01));
         for(Employees empNew:employees){
             System.out.println("Name:"+empNew.getName()+",Salary:"+empNew.getSalary());
         }
         //8. Count the number of employees in each department.
+        //Create a map using Collectors.groupingBy
+        //such that the keys are of Department String
+        //values are the no. of employees in department
         Map<String,Long> countMap = employees.stream().collect(Collectors.groupingBy(Employees::getDepartment,Collectors.counting()));
         Set<Map.Entry<String,Long>> countMapSet = countMap.entrySet();
         for(Map.Entry<String,Long> m:countMapSet){
             System.out.println("Department:"+m.getKey()+",EmployeeCount:"+m.getValue());
         }
+        //9. find the employee with the highest salary in each department.
+        //Map<String,Employees>
+        Map<String, Employees> highestPaidEmployeesByDeptMap = employees.stream()
+                .collect(Collectors.groupingBy(Employees::getDepartment,
+                        Collectors.collectingAndThen(
+                                Collectors.maxBy(Comparator.comparing(Employees::getSalary)),
+                                Optional::get
+                        )
+                ));
+        System.out.println(highestPaidEmployeesByDeptMap);
 
+        //10. Remove employees with salaries less than $50000.
+        //remove the employee if it's salary is less than 60k
+        employees.removeIf(empl -> empl.getSalary() <= 60000);
+        System.out.println(employees);
 
     }
 }
