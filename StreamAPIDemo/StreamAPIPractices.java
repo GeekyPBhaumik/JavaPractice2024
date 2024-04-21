@@ -65,6 +65,7 @@ public class StreamAPIPractices {
         personsList.add(new Person("Person4",45));
         Map<Integer,List<Person>> map = personsList.stream()
                                         .collect(Collectors.groupingBy(Person::getAge));
+
         for(Integer key:map.keySet()){
             List<Person> persons = map.get(key);
             for(Person person:persons){

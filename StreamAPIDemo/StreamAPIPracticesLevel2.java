@@ -1,8 +1,6 @@
 package StreamAPIDemo;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,6 +48,15 @@ public class StreamAPIPracticesLevel2 {
                                 .findFirst()
                                 .get();
         System.out.println(maxE);
+
+        HashSet<String> hashSet = new HashSet<>();
+        hashSet.add("Apple");
+        hashSet.add("Orange");
+        hashSet.add("Banana");
+        Iterator<String> itr = hashSet.iterator();
+        while(itr.hasNext()){
+            System.out.println(itr.next());
+        }
 
     }
 }
