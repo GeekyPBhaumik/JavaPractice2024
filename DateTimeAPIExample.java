@@ -13,5 +13,6 @@ public class DateTimeAPIExample {
         String modifiedTime = modifiedCurrentDateTime.format(formatter);
         System.out.println(dateTime);
         System.out.println(modifiedTime);
+        System.out.println(modifiedTime);
     }
 }
